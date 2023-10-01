@@ -1,0 +1,27 @@
+name: Jekyll site CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the site in the jekyll/builder container
+      run: |
+        docker run \
+        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
+        jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+
+    - name: Deploy a Prefect flow
+    # You may pin to the exact commit or the version.
+    # uses: PrefectHQ/actions-prefect-deploy@91e639dc39833c075d079d8ce571cedf6b7cfbe4
+    - uses: PrefectHQ/actions-prefect-deploy@v3
+     
+    
